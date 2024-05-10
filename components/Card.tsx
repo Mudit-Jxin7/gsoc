@@ -1,15 +1,15 @@
 import React from "react";
 import Image from "next/image";
-import { ArrowUpRight } from "@phosphor-icons/react";
 
 const Card = ({ organization }: any) => {
   return (
-    <div className="hover:scale-105 transition-all flex text-black fbfb] shadow-2xl flex-col gap-6 w-full h-[32rem] rounded-2xl justify-center items-center">
+    <div className="cursor-pointer hover:scale-105 transition-all flex text-black shadow-2xl flex-col gap-6 w-4/5 mx-auto sm:w-full h-[32rem] rounded-2xl justify-center items-center">
       <Image
         src={organization.image_url}
         alt={"img"}
         width={100}
         height={100}
+        className="w-2/5 h-24"
       />
 
       <p className="font-semibold text-center px-3 mx-auto text-lg">
@@ -20,7 +20,7 @@ const Card = ({ organization }: any) => {
         {organization.category}
       </p>
 
-      <p className="px-10 mx-auto text-center">{organization.description}</p>
+      <p className="px-10 mx-auto text-slate-600 text-center">{organization.description}</p>
       <ul className="flex flex-wrap gap-3 px-10">
         {organization.technologies
           .slice(0, 4)
