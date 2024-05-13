@@ -1,21 +1,65 @@
 "use client";
 import { useState, useEffect, SetStateAction } from "react";
 import { gsoc16 } from "@/utils/2016";
+import { gsoc17 } from "@/utils/2017";
+import { gsoc18 } from "@/utils/2018";
+import { gsoc19 } from "@/utils/2019";
+import { gsoc20 } from "@/utils/2020";
+import { gsoc21 } from "@/utils/2021";
+import { gsoc22 } from "@/utils/2022";
+import { gsoc23 } from "@/utils/2023";
+import { gsoc24 } from "@/utils/2024";
 import Card from "@/components/Card";
+import Link from "next/link";
 
-const Organization = () => {
-  const [organizations, setOrganizations] = useState(gsoc16.organizations);
+const Organization = ({ year }: any) => {
+  const [organizations, setOrganizations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
 
   useEffect(() => {
-    setOrganizations(gsoc16.organizations);
+    const selectedYear = year;
+    let selectedOrganizations: any = [];
+    switch (selectedYear) {
+      case '2016':
+        selectedOrganizations = gsoc16.organizations;
+        break;
+      case '2017':
+        selectedOrganizations = gsoc17.organizations;
+        break;
+      case '2018':
+        selectedOrganizations = gsoc18.organizations;
+        break;
+      case '2019':
+        selectedOrganizations = gsoc19.organizations;
+        break;
+      case '2020':
+        selectedOrganizations = gsoc20.organizations;
+        break;
+      case '2021':
+        selectedOrganizations = gsoc21.organizations;
+        break;
+      case '2022':
+        selectedOrganizations = gsoc22.organizations;
+        break;
+      case '2023':
+        selectedOrganizations = gsoc23.organizations;
+        break;
+      case '2024':
+        selectedOrganizations = gsoc24.organizations;
+        break;
+      default:
+        break;
+    }
+
+    setOrganizations(selectedOrganizations);
   }, []);
 
   useEffect(() => {
     const filteredOrgs = organizations.filter((org) =>
+      //@ts-ignore
       org.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredOrganizations(filteredOrgs);
@@ -36,9 +80,9 @@ const Organization = () => {
     <>
       <div className="flex justify-between items-center mb-4 p-2 sm:p-6">
         <div className="flex flex-row sm:gap-3">
-          <h1 className="hidden sm:block text-2xl font-bold text-black">
-            GSOC Organizations
-          </h1>
+          <Link href='/' className="hidden sm:block text-2xl font-bold text-black">
+            GSOC Organizations {year}
+          </Link>
         </div>
         <input
           type="text"
