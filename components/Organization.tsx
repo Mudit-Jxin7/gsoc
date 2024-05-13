@@ -2,12 +2,14 @@
 import { useState, useEffect, SetStateAction } from "react";
 import { allYears } from "@/utils/all";
 import Card from "@/components/Card";
+import FilterByYear from "./FilterByYear";
+import { categories } from "@/utils/data";
 
 const Organization = () => {
-  const years = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
   const [organizations, setOrganizations] = useState(allYears);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
 
@@ -19,8 +21,16 @@ const Organization = () => {
     const filteredOrgs = organizations.filter((org) =>
       org.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredOrganizations(filteredOrgs);
-  }, [searchTerm, organizations]);
+    if (selectedCategory) {
+      setFilteredOrganizations(
+        filteredOrgs.filter(
+          (org) => org.category.toLowerCase() === selectedCategory.toLowerCase()
+        )
+      );
+    } else {
+      setFilteredOrganizations(filteredOrgs);
+    }
+  }, [searchTerm, organizations, selectedCategory]);
 
   const organizationsToShow = filteredOrganizations.slice(
     (currentPage - 1) * 12,
@@ -31,6 +41,12 @@ const Organization = () => {
     target: { value: SetStateAction<string> };
   }) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleCategoryChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setSelectedCategory(event.target.value);
   };
 
   return (
@@ -50,14 +66,28 @@ const Organization = () => {
         />
       </div>
 
+      <div className="flex justify-around flex-row gap-4 w-3/4 mx-auto mb-20">
+        <FilterByYear />
+        <select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="px-3 py-2 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 sm:gap-8 sm:px-10">
-        {organizationsToShow.map((organization, idx) => {
-          return (
-            <div key={idx}>
-              <Card organization={organization} />
-            </div>
-          );
-        })}
+        {organizationsToShow.map((organization, idx) => (
+          <div key={idx}>
+            <Card organization={organization} />
+          </div>
+        ))}
       </div>
 
       <div className="flex text-black mt-8 gap-6 justify-center">

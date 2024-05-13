@@ -11,6 +11,8 @@ import { gsoc23 } from "@/utils/2023";
 import { gsoc24 } from "@/utils/2024";
 import Card from "@/components/Card";
 import Link from "next/link";
+import FilterByYear from "./FilterByYear";
+import { categories } from "@/utils/data";
 
 const Organization = ({ year }: any) => {
   const [organizations, setOrganizations] = useState([]);
@@ -18,36 +20,37 @@ const Organization = ({ year }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const selectedYear = year;
     let selectedOrganizations: any = [];
     switch (selectedYear) {
-      case '2016':
+      case "2016":
         selectedOrganizations = gsoc16.organizations;
         break;
-      case '2017':
+      case "2017":
         selectedOrganizations = gsoc17.organizations;
         break;
-      case '2018':
+      case "2018":
         selectedOrganizations = gsoc18.organizations;
         break;
-      case '2019':
+      case "2019":
         selectedOrganizations = gsoc19.organizations;
         break;
-      case '2020':
+      case "2020":
         selectedOrganizations = gsoc20.organizations;
         break;
-      case '2021':
+      case "2021":
         selectedOrganizations = gsoc21.organizations;
         break;
-      case '2022':
+      case "2022":
         selectedOrganizations = gsoc22.organizations;
         break;
-      case '2023':
+      case "2023":
         selectedOrganizations = gsoc23.organizations;
         break;
-      case '2024':
+      case "2024":
         selectedOrganizations = gsoc24.organizations;
         break;
       default:
@@ -62,8 +65,17 @@ const Organization = ({ year }: any) => {
       //@ts-ignore
       org.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredOrganizations(filteredOrgs);
-  }, [searchTerm, organizations]);
+    if (selectedCategory) {
+      setFilteredOrganizations(
+        filteredOrgs.filter(
+          //@ts-ignore
+          (org) => org.category.toLowerCase() === selectedCategory.toLowerCase()
+        )
+      );
+    } else {
+      setFilteredOrganizations(filteredOrgs);
+    }
+  }, [searchTerm, organizations, selectedCategory]);
 
   const organizationsToShow = filteredOrganizations.slice(
     (currentPage - 1) * 12,
@@ -76,11 +88,20 @@ const Organization = ({ year }: any) => {
     setSearchTerm(event.target.value);
   };
 
+  const handleCategoryChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setSelectedCategory(event.target.value);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-4 p-2 sm:p-6">
         <div className="flex flex-row sm:gap-3">
-          <Link href='/' className="hidden sm:block text-2xl font-bold text-black">
+          <Link
+            href="/"
+            className="hidden sm:block text-2xl font-bold text-black"
+          >
             GSOC Organizations {year}
           </Link>
         </div>
@@ -91,6 +112,22 @@ const Organization = ({ year }: any) => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
+      </div>
+
+      <div className="flex justify-around flex-row gap-4 w-3/4 mx-auto mb-20">
+        <FilterByYear />
+        <select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="px-3 py-2 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 sm:gap-8 sm:px-10">
