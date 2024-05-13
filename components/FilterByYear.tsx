@@ -8,7 +8,7 @@ import Link from "next/link";
 const FilterByYear = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="border-2 border-black px-8 py-1 rounded-lg">
+      <DropdownMenuTrigger className="border-2 h-12 border-black px-8 py-1 rounded-lg">
         Year
       </DropdownMenuTrigger>
       <DropdownMenuContent>

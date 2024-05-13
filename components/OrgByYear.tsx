@@ -15,12 +15,14 @@ import FilterByYear from "./FilterByYear";
 import { categories } from "@/utils/data";
 
 const Organization = ({ year }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [organizations, setOrganizations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTechnologies, setSelectedTechnologies] = useState([]);
 
   useEffect(() => {
     const selectedYear = year;
@@ -77,6 +79,23 @@ const Organization = ({ year }: any) => {
     }
   }, [searchTerm, organizations, selectedCategory]);
 
+  useEffect(() => {
+    if (selectedTechnologies.length > 0) {
+      setFilteredOrganizations(
+        organizations.filter((org) =>
+        //@ts-ignore
+          selectedTechnologies.every((tech) => org.technologies.includes(tech))
+        )
+      );
+    } else {
+      setFilteredOrganizations(organizations);
+    }
+  }, [selectedTechnologies, organizations]);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
   const organizationsToShow = filteredOrganizations.slice(
     (currentPage - 1) * 12,
     currentPage * 12
@@ -93,6 +112,28 @@ const Organization = ({ year }: any) => {
   }) => {
     setSelectedCategory(event.target.value);
   };
+
+  const handleTechnologyChange = (event: {
+    target: { selectedOptions: Iterable<unknown> | ArrayLike<unknown> };
+  }) => {
+    const selectedOptions = Array.from(
+      event.target.selectedOptions,
+      //@ts-expect-error
+      (option) => option.value
+    );
+    if (selectedOptions.includes("")) {
+      // If "None" is selected, clear all selected technologies and reset filters
+      setSelectedTechnologies([]);
+    } else {
+      //@ts-expect-error
+      setSelectedTechnologies(selectedOptions);
+    }
+  };
+
+  const sortedTechnologies = Array.from(
+    //@ts-ignore
+    new Set(organizations.flatMap((org) => org.technologies))
+  ).sort();
 
   return (
     <>
@@ -128,6 +169,31 @@ const Organization = ({ year }: any) => {
             </option>
           ))}
         </select>
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="px-3 h-12 w-60 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            Select Technologies
+          </button>
+          {isOpen && (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+              <select
+                multiple
+                value={selectedTechnologies}
+                onChange={handleTechnologyChange}
+                className="w-full h-40 px-3 py-2 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">None</option>
+                {sortedTechnologies.map((technology) => (
+                  <option key={technology} value={technology}>
+                    {technology}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 sm:gap-8 sm:px-10">
