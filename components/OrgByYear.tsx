@@ -1,18 +1,17 @@
 "use client";
 import { useState, useEffect, SetStateAction } from "react";
-import { allYears } from "@/utils/all";
+import { gsoc16 } from "@/utils/2016";
 import Card from "@/components/Card";
 
 const Organization = () => {
-  const years = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
-  const [organizations, setOrganizations] = useState(allYears);
+  const [organizations, setOrganizations] = useState(gsoc16.organizations);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
 
   useEffect(() => {
-    setOrganizations(allYears);
+    setOrganizations(gsoc16.organizations);
   }, []);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-export const gsoc2021 = {
+export const gsoc21 = {
   year: 2021,
   archive_url:
     "https://summerofcode.withgoogle.com/archive/2021/organizations/",
