@@ -16,13 +16,15 @@ import { categories } from "@/utils/data";
 
 const Organization = ({ year }: any) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenToggle, setIsOpenToggle] = useState(false);
   const [organizations, setOrganizations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOrganizations, setFilteredOrganizations] =
-    useState(organizations);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [filteredOrganizations, setFilteredOrganizations] =
+    useState(organizations);
 
   useEffect(() => {
     const selectedYear = year;
@@ -83,7 +85,7 @@ const Organization = ({ year }: any) => {
     if (selectedTechnologies.length > 0) {
       setFilteredOrganizations(
         organizations.filter((org) =>
-        //@ts-ignore
+          //@ts-ignore
           selectedTechnologies.every((tech) => org.technologies.includes(tech))
         )
       );
@@ -91,6 +93,19 @@ const Organization = ({ year }: any) => {
       setFilteredOrganizations(organizations);
     }
   }, [selectedTechnologies, organizations]);
+
+  useEffect(() => {
+    if (selectedTopics.length > 0) {
+      setFilteredOrganizations(
+        organizations.filter((org) =>
+          //@ts-ignore
+          selectedTopics.every((topic) => org.topics.includes(topic))
+        )
+      );
+    } else {
+      setFilteredOrganizations(organizations);
+    }
+  }, [selectedTopics, organizations]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -122,7 +137,6 @@ const Organization = ({ year }: any) => {
       (option) => option.value
     );
     if (selectedOptions.includes("")) {
-      // If "None" is selected, clear all selected technologies and reset filters
       setSelectedTechnologies([]);
     } else {
       //@ts-expect-error
@@ -130,9 +144,32 @@ const Organization = ({ year }: any) => {
     }
   };
 
+  const handleTopicChange = (event: any) => {
+    const selectedOptions = Array.from(
+      event.target.selectedOptions,
+      //@ts-ignore
+      (option) => option.value
+    );
+    if (selectedOptions.includes("")) {
+      setSelectedTopics([]);
+    } else {
+      //@ts-ignore
+      setSelectedTopics(selectedOptions);
+    }
+  };
+
+  const toggleDropdownToggle = () => {
+    setIsOpenToggle(!isOpenToggle);
+  };
+
   const sortedTechnologies = Array.from(
     //@ts-ignore
     new Set(organizations.flatMap((org) => org.technologies))
+  ).sort();
+
+  const sortedTopics = Array.from(
+    //@ts-ignore
+    new Set(organizations.flatMap((org) => org.topics))
   ).sort();
 
   return (
@@ -188,6 +225,31 @@ const Organization = ({ year }: any) => {
                 {sortedTechnologies.map((technology) => (
                   <option key={technology} value={technology}>
                     {technology}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+        <div className="relative">
+          <button
+            onClick={toggleDropdownToggle}
+            className="px-3 h-12 w-60 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            Select Topics
+          </button>
+          {isOpenToggle && (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+              <select
+                multiple
+                value={selectedTopics}
+                onChange={handleTopicChange}
+                className="w-full h-40 px-3 py-2 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">None</option>
+                {sortedTopics.map((topic) => (
+                  <option key={topic} value={topic}>
+                    {topic}
                   </option>
                 ))}
               </select>

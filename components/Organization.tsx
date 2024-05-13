@@ -7,11 +7,13 @@ import { categories } from "@/utils/data";
 
 const Organization = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenToggle, setIsOpenToggle] = useState(false);
   const [organizations, setOrganizations] = useState(allYears);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+  const [selectedTopics, setSelectedTopics] = useState([]);
   const [filteredOrganizations, setFilteredOrganizations] =
     useState(organizations);
 
@@ -46,8 +48,24 @@ const Organization = () => {
     }
   }, [selectedTechnologies, organizations]);
 
+  useEffect(() => {
+    if (selectedTopics.length > 0) {
+      setFilteredOrganizations(
+        organizations.filter((org) =>
+          selectedTopics.every((topic) => org.topics.includes(topic))
+        )
+      );
+    } else {
+      setFilteredOrganizations(organizations);
+    }
+  }, [selectedTopics, organizations]);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleDropdownToggle = () => {
+    setIsOpenToggle(!isOpenToggle);
   };
 
   const organizationsToShow = filteredOrganizations.slice(
@@ -68,24 +86,42 @@ const Organization = () => {
   };
 
   const handleTechnologyChange = (event: {
-    target: { selectedOptions: Iterable<unknown> | ArrayLike<unknown> };
+    target: { value: SetStateAction<string> };
   }) => {
     const selectedOptions = Array.from(
+      //@ts-ignore
       event.target.selectedOptions,
-      //@ts-expect-error
+      //@ts-ignore
       (option) => option.value
     );
     if (selectedOptions.includes("")) {
-      // If "None" is selected, clear all selected technologies and reset filters
       setSelectedTechnologies([]);
     } else {
-      //@ts-expect-error
+      //@ts-ignore
       setSelectedTechnologies(selectedOptions);
+    }
+  };
+
+  const handleTopicChange = (event: any) => {
+    const selectedOptions = Array.from(
+      event.target.selectedOptions,
+      //@ts-ignore
+      (option) => option.value
+    );
+    if (selectedOptions.includes("")) {
+      setSelectedTopics([]);
+    } else {
+      //@ts-ignore
+      setSelectedTopics(selectedOptions);
     }
   };
 
   const sortedTechnologies = Array.from(
     new Set(organizations.flatMap((org) => org.technologies))
+  ).sort();
+
+  const sortedTopics = Array.from(
+    new Set(organizations.flatMap((org) => org.topics))
   ).sort();
 
   return (
@@ -144,6 +180,31 @@ const Organization = () => {
             </div>
           )}
         </div>
+        <div className="relative">
+          <button
+            onClick={toggleDropdownToggle}
+            className="px-3 h-12 w-60 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            Select Topics
+          </button>
+          {isOpenToggle && (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+              <select
+                multiple
+                value={selectedTopics}
+                onChange={handleTopicChange}
+                className="w-full h-40 px-3 py-2 text-black text-xs sm:text-base rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">None</option>
+                {sortedTopics.map((topic) => (
+                  <option key={topic} value={topic}>
+                    {topic}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 sm:gap-8 sm:px-10">
@@ -154,7 +215,7 @@ const Organization = () => {
         ))}
       </div>
 
-      <div className="flex text-black mt-8 gap-6 justify-center">
+      <div className="flex text-black my-8 gap-6 justify-center">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
