@@ -47,13 +47,16 @@ const Page = ({ params }: { params: { organization: string } }) => {
         {selectedYear && (
           <div className="w-3/4">
             <ul className="flex flex-row justify-center gap-4">
-              {organization.years[selectedYear.toString()].projects.map(
-                (project: any, index: number) => (
-                  <div key={index}>
-                    <ProjectCard project={project} />
-                  </div>
+              {
+                //@ts-ignore
+                organization.years[selectedYear.toString()].projects.map(
+                  (project: any, index: number) => (
+                    <div key={index}>
+                      <ProjectCard project={project} />
+                    </div>
+                  )
                 )
-              )}
+              }
             </ul>
           </div>
         )}
