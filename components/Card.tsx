@@ -1,9 +1,13 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Card = ({ organization }: any) => {
   return (
-    <div className="cursor-pointer hover:scale-105 transition-all flex text-black shadow-2xl flex-col gap-6 w-4/5 mx-auto sm:w-full h-[32rem] rounded-2xl justify-center items-center">
+    <Link
+      href={`/organization/${organization.name}`}
+      className="cursor-pointer hover:scale-105 transition-all flex text-black shadow-2xl flex-col gap-6 w-4/5 mx-auto sm:w-full h-[32rem] rounded-2xl justify-center items-center"
+    >
       <Image
         src={organization.image_url}
         alt={"img"}
@@ -20,7 +24,9 @@ const Card = ({ organization }: any) => {
         {organization.category}
       </p>
 
-      <p className="px-10 mx-auto text-slate-600 text-center">{organization.description}</p>
+      <p className="px-10 mx-auto text-slate-600 text-center">
+        {organization.description}
+      </p>
       <ul className="flex flex-wrap gap-3 px-10">
         {organization.technologies
           .slice(0, 4)
@@ -39,7 +45,7 @@ const Card = ({ organization }: any) => {
           </li>
         )}
       </ul>
-    </div>
+    </Link>
   );
 };
 
