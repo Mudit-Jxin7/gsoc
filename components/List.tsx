@@ -18,7 +18,7 @@ const List = ({ organization }: any) => {
         ))}
       </div>
       <Separator />
-      <h3 className="font-semibold">Topics</h3>
+      <h3 className="font-semibold">Technologies</h3>
       <div className="flex flex-wrap gap-2 px-8">
         {organization.technologies.map(
           (
@@ -44,6 +44,7 @@ const List = ({ organization }: any) => {
         )}
       </div>
       <Separator />
+      <h3 className="font-semibold">Topics</h3>
       <div className="flex flex-wrap gap-2 px-8">
         {organization.topics.map(
           (
