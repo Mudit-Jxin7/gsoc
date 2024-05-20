@@ -46,7 +46,7 @@ const Page = ({ params }: { params: { organization: string } }) => {
         </div>
         {selectedYear && (
           <div className="w-3/4">
-            <ul className="flex flex-row justify-center gap-4">
+            <ul className="flex flex-col w-3/4 justify-center gap-4">
               {
                 //@ts-ignore
                 organization.years[selectedYear.toString()].projects.map(
