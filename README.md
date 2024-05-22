@@ -11,7 +11,6 @@ Welcome to the GSOC Organization Tracker project! This project is built using Ne
   - [Running the Project](#running-the-project)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 - [Contact](#contact)
 
 ## Features
